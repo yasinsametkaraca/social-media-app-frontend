@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
@@ -14,11 +14,79 @@ import { red } from '@material-ui/core/colors';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import InsertCommentIcon from '@material-ui/icons/InsertComment';
+import {Link} from "react-router-dom";
+
+const Post = (props) => {
+
+    const {title,text,userId,username} = props;
+    const classes = useStyles();
+    const [like, setLike] = useState(false);
+    const [expanded, setExpanded] = React.useState(false);
+
+    const handleExpandClick = () => {
+        setExpanded(!expanded);
+    };
+
+    const handleLikeClick = () => {
+        setLike(!like)
+    }
+
+    return (
+        <div>
+            <Card className={classes.root}>
+                <CardHeader className={classes.header}
+                    avatar={
+                        <Link className={classes.routerLink} to={"/users/"+userId}>
+                            <Avatar aria-label="recipe" className={classes.avatar}>
+                                {username.charAt(0).toUpperCase()}
+                            </Avatar>
+                        </Link>
+                    }
+                    title={title}
+                />
+                <CardContent>
+                    <Typography className={classes.text} variant="body2" color="textSecondary" component="p">
+                        {text}
+                    </Typography>
+                </CardContent>
+                <CardActions disableSpacing>
+                    <IconButton aria-label="add to favorites"  onClick={handleLikeClick}>
+                        <FavoriteIcon style={like ? {color:"red"} : null}/>
+                    </IconButton>
+                    <IconButton
+                        className={clsx(classes.expand, {
+                            [classes.expandOpen]: expanded,
+                        })}
+                        onClick={handleExpandClick}
+                        aria-expanded={expanded}
+                        aria-label="show more"
+                    >
+                        <InsertCommentIcon />
+                    </IconButton>
+                </CardActions>
+                <Collapse in={expanded} timeout="auto" unmountOnExit>
+                    <CardContent>
+                    </CardContent>
+                </Collapse>
+            </Card>
+        </div>
+    )
+};
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        maxWidth: 345,
+        minWidth :"200",
+        flexWrap:"wrap",
+        marginRight:"10px",
+        marginTop:"10px",
+        width : 800,
+    },
+    text:{
+        textAlign :"center"
+    },
+    header:{
+        textAlign:"left"
     },
     media: {
         height: 0,
@@ -37,65 +105,13 @@ const useStyles = makeStyles((theme) => ({
     avatar: {
         backgroundColor: red[500],
     },
+    routerLink:{
+        display:"flex",
+        justifyContent: "space-between",
+        textDecoration:"none",
+        boxShadow:"none",
+        color:"whitesmoke"
+    }
 }));
-
-const Post = (props) => {
-
-    const {title,text} = props;
-    const classes = useStyles();
-    const [expanded, setExpanded] = React.useState(false);
-
-    const handleExpandClick = () => {
-        setExpanded(!expanded);
-    };
-    return (
-        <div>
-            <Card className={classes.root}>
-                <CardHeader
-                    avatar={
-                        <Avatar aria-label="recipe" className={classes.avatar}>
-                            R
-                        </Avatar>
-                    }
-                    action={
-                        <IconButton aria-label="settings">
-                            <MoreVertIcon />
-                        </IconButton>
-                    }
-                    title={title}
-                    subheader="September 14, 2016"
-                />
-                <CardContent>
-                    <Typography variant="body2" color="textSecondary" component="p">
-                        {text}
-                    </Typography>
-                </CardContent>
-                <CardActions disableSpacing>
-                    <IconButton aria-label="add to favorites">
-                        <FavoriteIcon />
-                    </IconButton>
-                    <IconButton aria-label="share">
-                        <ShareIcon />
-                    </IconButton>
-                    <IconButton
-                        className={clsx(classes.expand, {
-                            [classes.expandOpen]: expanded,
-                        })}
-                        onClick={handleExpandClick}
-                        aria-expanded={expanded}
-                        aria-label="show more"
-                    >
-                        <ExpandMoreIcon />
-                    </IconButton>
-                </CardActions>
-                <Collapse in={expanded} timeout="auto" unmountOnExit>
-                    <CardContent>
-                    </CardContent>
-                </Collapse>
-            </Card>
-        </div>
-    )
-
-};
 
 export default Post;
