@@ -68,6 +68,7 @@ const Post = (props) => {
                 </Alert>
             </Snackbar>
             <Card className={classes.root}>
+                <h4>What do you think?</h4>
                 <CardHeader className={classes.header}
                             avatar={
                                 <Link className={classes.routerLink} to={"/users/"+userId}>
@@ -77,7 +78,7 @@ const Post = (props) => {
                                 </Link>
                             }
                             title={
-                            <OutlinedInput value={title} onChange={(event) => handleTitle(event.target.value)} placeholder={"Title"} multiline={true} id="outlined-adornment-amount"  inputProps={{maxLength:30}}>
+                            <OutlinedInput fullWidth value={title} onChange={(event) => handleTitle(event.target.value)} placeholder={"Title"} multiline={true} id="outlined-adornment-amount"  inputProps={{maxLength:30}}>
 
                             </OutlinedInput>}
                 />

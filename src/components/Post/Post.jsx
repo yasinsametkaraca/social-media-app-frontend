@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
@@ -12,25 +12,87 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import InsertCommentIcon from '@material-ui/icons/InsertComment';
 import {Link} from "react-router-dom";
+import {Container} from "@material-ui/core";
+import comment from "../Comment/Comment";
+import Comment from "../Comment/Comment";
+import CommentCrud from "../Comment/CommentCrud";
 
 const Post = (props) => {
 
-    const {title,text,userId,username} = props;
+    const {title,text,userId,username,likes,postId} = props;
     const classes = useStyles();
-    const [like, setLike] = useState(false);
     const [expanded, setExpanded] = React.useState(false);
+    const [error,setError] = useState(null);
+    const [commentList,setCommentList] = useState([]);
+    const [isLoaded,setIsLoaded] = useState(false);
+    const isInitialMount = useRef(true);
+    const [likeCount, setLikeCount] = useState(likes.length);
+    const [isLiked, setIsLiked] = useState(false);
+    const [likeId, setLikeId] = useState(null);
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
+        fetchComments();
+        console.log(commentList)
     };
 
     const handleLikeClick = () => {
-        setLike(!like)
+        setIsLiked(!isLiked);
+        if(!isLiked) {
+            setLikeCount(likeCount+1)
+            saveLike();
+        }
+        else{
+            setLikeCount(likeCount-1)
+            deleteLike();
+        }
+
     }
+    const fetchComments = () => {
+        fetch("/comments?postId="+postId).then(response => response.json())
+            .then((result)=> {
+                    setIsLoaded(true)
+                    setCommentList(result)
+                },(error) => {
+                    setIsLoaded(true);
+                    setError(error);
+                }
+            )
+    }
+
+    const saveLike = () => {
+        fetch("/likes", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({userId: userId, postId:postId}),
+        }).then(r => r.json()).catch((error) => {console.log(error)})
+    }
+    const deleteLike = () => {
+        fetch("/likes/"+likeId, {
+            method: "DELETE",
+        }).catch((error) => {console.log(error)})
+    }
+
+    const checkLikes = () => {
+        let likeControl = likes.find(like => like.userId===userId)
+        if(likeControl!=null){
+            setLikeId(likeControl.id);
+            setIsLiked(true)
+        }
+    }
+    useEffect(() => {
+        if(isInitialMount.current)  //biz commentlerin ilk component yüklendiğinde değil comment ikonuna tıklandığında açılmasını istiyoruz.
+            isInitialMount.current=false;
+        else
+            fetchComments()
+    },[commentList])
+
+    useEffect(() => {
+       checkLikes()
+    }, []);
+
 
     return (
         <div>
@@ -52,8 +114,8 @@ const Post = (props) => {
                 </CardContent>
                 <CardActions disableSpacing>
                     <IconButton aria-label="add to favorites"  onClick={handleLikeClick}>
-                        <FavoriteIcon style={like ? {color:"red"} : null}/>
-                    </IconButton>
+                        <FavoriteIcon style={isLiked ? {color:"red"} : null}/>
+                    </IconButton>{likeCount}
                     <IconButton
                         className={clsx(classes.expand, {
                             [classes.expandOpen]: expanded,
@@ -66,8 +128,14 @@ const Post = (props) => {
                     </IconButton>
                 </CardActions>
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
-                    <CardContent>
-                    </CardContent>
+                        <Container fixed className={classes.container}>
+                            {
+                                error ? "error": isLoaded ? commentList.map(comment => (
+                                    <Comment userId={1} username={"username"} text={comment.text}></Comment>
+                                )) : "Loading"
+                            }
+                            <CommentCrud userId={1} username={"username"} postId={postId}></CommentCrud>
+                        </Container>
                 </Collapse>
             </Card>
         </div>

@@ -35,7 +35,7 @@ const Home = () => {
             <div className={classes.container}>
                 <PostCrud fetchPosts={fetchPosts} userId={1} username={"234"}></PostCrud>
                 {postList.map( post => (
-                    <Post userId={post.userId} username={post.username} title={post.title} text={post.text} ></Post>
+                    <Post likes={post.postLikes} postId={post.id} userId={post.userId} username={post.username} title={post.title} text={post.text} ></Post>
                 ))}
             </div>
         )
