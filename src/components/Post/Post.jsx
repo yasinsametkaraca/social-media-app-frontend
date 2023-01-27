@@ -14,7 +14,7 @@ import { red } from '@material-ui/core/colors';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import InsertCommentIcon from '@material-ui/icons/InsertComment';
 import {Link} from "react-router-dom";
-import {Container} from "@material-ui/core";
+import {Container, useMediaQuery, useTheme} from "@material-ui/core";
 import comment from "../Comment/Comment";
 import Comment from "../Comment/Comment";
 import CommentCrud from "../Comment/CommentCrud";
@@ -31,6 +31,8 @@ const Post = (props) => {
     const [likeCount, setLikeCount] = useState(likes.length);
     const [isLiked, setIsLiked] = useState(false);
     const [likeId, setLikeId] = useState(null);
+    const theme = useTheme();
+    const matches = useMediaQuery(theme.breakpoints.up('sm'));
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -95,7 +97,7 @@ const Post = (props) => {
 
 
     return (
-        <div>
+        <div className={classes.root}>
             <Card className={classes.root}>
                 <CardHeader className={classes.header}
                     avatar={
@@ -144,11 +146,20 @@ const Post = (props) => {
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        minWidth :"200",
-        flexWrap:"wrap",
+        display:"flex",
+        flexDirection:"column",
+        justifyContent:"center",
+        flexWrap:"nowrap",
         marginRight:"10px",
         marginTop:"10px",
-        width : 800,
+        width:800,
+        height:250,
+        [theme.breakpoints.down('sm')]: {
+            width:600,
+        },
+        [theme.breakpoints.down('xs')]: {
+            width:400,
+        },
     },
     text:{
         textAlign :"center"

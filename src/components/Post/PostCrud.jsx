@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
 import OutlinedInput from '@material-ui/core/outlinedInput';
 import {Link} from "react-router-dom";
-import {InputAdornment, Snackbar} from "@material-ui/core";
+import {Divider, InputAdornment, Snackbar} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import * as PropTypes from "prop-types";
 import MuiAlert from '@material-ui/lab/Alert';
@@ -67,7 +67,7 @@ const Post = (props) => {
                     your post is sent!
                 </Alert>
             </Snackbar>
-            <Card className={classes.root}>
+            <Card className={classes.root} f>
                 <h4>What do you think?</h4>
                 <CardHeader className={classes.header}
                             avatar={
@@ -94,18 +94,30 @@ const Post = (props) => {
                         </OutlinedInput>
                     </Typography>
                 </CardContent>
-            </Card>
+            </Card><br/>
+            <Divider></Divider>
         </div>
     )
 };
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        minWidth :"200",
-        flexWrap:"wrap",
+        display:"flex",
+        flexDirection:"column",
+        justifyContent:"center",
+        alignContent:"center",
+        flexWrap:"nowrap",
         marginRight:"10px",
+        marginLeft:"10px",
         marginTop:"10px",
-        width : 800,
+        width:1100,
+        height:270,
+        [theme.breakpoints.down('sm')]: {
+            width:700,
+        },
+        [theme.breakpoints.down('xs')]: {
+            width:400,
+        },
     },
     text:{
         textAlign :"center"
