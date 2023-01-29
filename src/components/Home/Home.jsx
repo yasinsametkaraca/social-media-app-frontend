@@ -33,7 +33,8 @@ const Home = () => {
     }else {
         return (
             <div className={classes.container}>
-                <PostCrud fetchPosts={fetchPosts} userId={1} username={"234"}></PostCrud>
+                {localStorage.getItem("currentUser")==null ? "" : <PostCrud fetchPosts={fetchPosts} userId={localStorage.getItem("currentUser")} username={localStorage.getItem("username")}></PostCrud>}
+
                 {postList.map( post => (
                     <Post likes={post.postLikes} postId={post.id} userId={post.userId} username={post.username} title={post.title} text={post.text} ></Post>
                 ))}

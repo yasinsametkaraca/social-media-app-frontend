@@ -14,7 +14,7 @@ const CommentCrud = (props) => {
     const saveComment = () => {
         fetch("/comments", {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: {"Content-Type": "application/json","Authorization":localStorage.getItem("tokenKey")},
             body: JSON.stringify({userId: userId, text: text, postId:postId}),
         }).then(r => r.json()).catch((error) => {console.log(error)})
     }

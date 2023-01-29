@@ -15,9 +15,10 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import InsertCommentIcon from '@material-ui/icons/InsertComment';
 import {Link} from "react-router-dom";
 import {Container, useMediaQuery, useTheme} from "@material-ui/core";
-import comment from "../Comment/Comment";
 import Comment from "../Comment/Comment";
 import CommentCrud from "../Comment/CommentCrud";
+
+
 
 const Post = (props) => {
 
@@ -67,18 +68,19 @@ const Post = (props) => {
     const saveLike = () => {
         fetch("/likes", {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({userId: userId, postId:postId}),
+            headers: {"Content-Type": "application/json","Authorization":localStorage.getItem("tokenKey")},
+            body: JSON.stringify({userId: localStorage.getItem("currentUser"), postId:postId}),
         }).then(r => r.json()).catch((error) => {console.log(error)})
     }
     const deleteLike = () => {
         fetch("/likes/"+likeId, {
             method: "DELETE",
+            headers: {"Authorization":localStorage.getItem("tokenKey")}
         }).catch((error) => {console.log(error)})
     }
 
     const checkLikes = () => {
-        let likeControl = likes.find(like => like.userId===userId)
+        let likeControl = likes.find(like => ""+like.userId===localStorage.getItem("currentUser"))
         if(likeControl!=null){
             setLikeId(likeControl.id);
             setIsLiked(true)
@@ -114,8 +116,8 @@ const Post = (props) => {
                         {text}
                     </Typography>
                 </CardContent>
-                <CardActions disableSpacing>
-                    <IconButton aria-label="add to favorites"  onClick={handleLikeClick}>
+                <CardActions  disableSpacing>
+                    <IconButton disabled={!(localStorage.getItem("currentUser"))} aria-label="add to favorites"  onClick={handleLikeClick}>
                         <FavoriteIcon style={isLiked ? {color:"red"} : null}/>
                     </IconButton>{likeCount}
                     <IconButton
@@ -136,7 +138,7 @@ const Post = (props) => {
                                     <Comment userId={1} username={"username"} text={comment.text}></Comment>
                                 )) : "Loading"
                             }
-                            <CommentCrud userId={1} username={"username"} postId={postId}></CommentCrud>
+                            {localStorage.getItem("currentUser")!==null && <CommentCrud userId={1} username={"username"} postId={postId}></CommentCrud>}
                         </Container>
                 </Collapse>
             </Card>
@@ -153,7 +155,6 @@ const useStyles = makeStyles((theme) => ({
         marginRight:"10px",
         marginTop:"10px",
         width:800,
-        height:250,
         [theme.breakpoints.down('sm')]: {
             width:600,
         },

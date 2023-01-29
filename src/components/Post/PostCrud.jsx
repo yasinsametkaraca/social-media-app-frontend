@@ -35,7 +35,7 @@ const Post = (props) => {
     const savePost = () => {
         fetch("/posts", {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: {"Content-Type": "application/json","Authorization":localStorage.getItem("tokenKey")},
             body: JSON.stringify({title: title, userId: userId, text: text}),
         }).then(r => r.json()).catch((error) => {console.log(error)})
     }
@@ -68,7 +68,7 @@ const Post = (props) => {
                 </Alert>
             </Snackbar>
             <Card className={classes.root} f>
-                <h4>What do you think?</h4>
+                <h2>What do you think?</h2>
                 <CardHeader className={classes.header}
                             avatar={
                                 <Link className={classes.routerLink} to={"/users/"+userId}>
@@ -112,8 +112,14 @@ const useStyles = makeStyles((theme) => ({
         marginTop:"10px",
         width:1100,
         height:270,
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down('lg')]: {
+            width:900,
+        },
+        [theme.breakpoints.down('md')]: {
             width:700,
+        },
+        [theme.breakpoints.down('sm')]: {
+            width:550,
         },
         [theme.breakpoints.down('xs')]: {
             width:400,

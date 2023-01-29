@@ -1,9 +1,10 @@
 import './App.css';
 import Post from "./components/Post/Post";
-import {BrowserRouter,Routes, Route} from "react-router-dom";
+import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import Home from "./components/Home/Home";
 import User from "./components/User/User";
 import Navbar from "./components/Navbar";
+import Auth from "./components/Authentication/Auth";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
             <Routes>
                 <Route exact path={"/"} element={<Home></Home>}></Route>
                 <Route exact path={"/users/:userId"} element={<User></User>}></Route>
+                <Route path="/auth" element= {localStorage.getItem("currentUser") !=null ? <Navigate  to="/"/> :<Auth/> }></Route>
             </Routes>
         </BrowserRouter>
     </div>

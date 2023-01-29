@@ -6,11 +6,52 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import {LockOpen} from "@material-ui/icons";
+
+const Navbar = () => {
+
+    const classes = useStyles();
+    let navigate = useNavigate();
+    const logout = () => {
+        localStorage.removeItem("tokenKey")
+        localStorage.removeItem("currentUser")
+        localStorage.removeItem("username")
+        navigate("/auth")
+    }
+
+    return (
+        <div>
+            <AppBar position="static">
+                <Toolbar>
+                    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+                        <MenuIcon />
+                    </IconButton>
+                    <Typography variant="h6" className={classes.title}>
+                        <Link className={classes.routerLink} to={"/"}>Home</Link>
+                    </Typography>
+                    <Typography variant="h6">
+                        {localStorage.getItem("currentUser") == null ? <Link className={classes.routerLink} to={"/auth"}>Login/Signup</Link>
+                            :<div className={classes.navbar}>
+                                <Link className={classes.routerLink} to={"/users/"+localStorage.getItem("currentUser")}>Profile</Link>
+                                <IconButton onClick={logout}><LockOpen></LockOpen></IconButton>
+                            </div>
+                        }
+                    </Typography>
+                </Toolbar>
+            </AppBar>
+        </div>
+    );
+};
 
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
+    },
+    navbar:{
+      display:"flex",
+      justifyContent: "center",
+      alignItems:"center"
     },
     menuButton: {
         marginRight: theme.spacing(2),
@@ -26,26 +67,4 @@ const useStyles = makeStyles((theme) => ({
         color:"whitesmoke"
     }
 }));
-
-const Navbar = () => {
-    let userId=1;
-    const classes = useStyles();
-    return (
-        <div>
-            <AppBar position="static">
-                <Toolbar>
-                    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" className={classes.title}>
-                        <Link className={classes.routerLink} to={"/"}>Home</Link>
-                    </Typography>
-                    <Typography variant="h6">
-                        <Link className={classes.routerLink} to={"/users/"+userId}>User</Link>
-                    </Typography>
-                </Toolbar>
-            </AppBar>
-        </div>
-    );
-};
 export default Navbar;
