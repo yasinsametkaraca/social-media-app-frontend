@@ -17,8 +17,7 @@ import {Link} from "react-router-dom";
 import {Container, useMediaQuery, useTheme} from "@material-ui/core";
 import Comment from "../Comment/Comment";
 import CommentCrud from "../Comment/CommentCrud";
-
-
+import {DeleteWithAuth, PostWithAuth} from "../../services/api";
 
 const Post = (props) => {
 
@@ -33,7 +32,6 @@ const Post = (props) => {
     const [isLiked, setIsLiked] = useState(false);
     const [likeId, setLikeId] = useState(null);
     const theme = useTheme();
-    const matches = useMediaQuery(theme.breakpoints.up('sm'));
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -51,7 +49,6 @@ const Post = (props) => {
             setLikeCount(likeCount-1)
             deleteLike();
         }
-
     }
     const fetchComments = () => {
         fetch("/comments?postId="+postId).then(response => response.json())
@@ -66,22 +63,17 @@ const Post = (props) => {
     }
 
     const saveLike = () => {
-        fetch("/likes", {
-            method: "POST",
-            headers: {"Content-Type": "application/json","Authorization":localStorage.getItem("tokenKey")},
-            body: JSON.stringify({userId: localStorage.getItem("currentUser"), postId:postId}),
-        }).then(r => r.json()).catch((error) => {console.log(error)})
+        PostWithAuth("/likes",{userId: localStorage.getItem("currentUser"), postId:postId})
+            .then(r => r.json()).catch((error) => {console.log(error)})
     }
     const deleteLike = () => {
-        fetch("/likes/"+likeId, {
-            method: "DELETE",
-            headers: {"Authorization":localStorage.getItem("tokenKey")}
-        }).catch((error) => {console.log(error)})
+        DeleteWithAuth("/likes/"+likeId)
+            .catch((error) => {console.log(error)})
     }
 
     const checkLikes = () => {
-        let likeControl = likes.find(like => ""+like.userId===localStorage.getItem("currentUser"))
-        if(likeControl!=null){
+        var likeControl = likes.find(like => ""+like.userId===localStorage.getItem("currentUser"))
+        if(likeControl != null){
             setLikeId(likeControl.id);
             setIsLiked(true)
         }
@@ -91,7 +83,7 @@ const Post = (props) => {
             isInitialMount.current=false;
         else
             fetchComments()
-    },[commentList])
+    },[])
 
     useEffect(() => {
        checkLikes()
@@ -105,7 +97,7 @@ const Post = (props) => {
                     avatar={
                         <Link className={classes.routerLink} to={"/users/"+userId}>
                             <Avatar aria-label="recipe" className={classes.avatar}>
-                                {username.charAt(0).toUpperCase()}
+                                {}
                             </Avatar>
                         </Link>
                     }

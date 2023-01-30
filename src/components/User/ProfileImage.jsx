@@ -7,25 +7,24 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import Post from "./Post/Post";
-import PostCrud from "./Post/PostCrud";
-import {
-    Checkbox, List,
-    ListItem,
-    ListItemAvatar,
-    ListItemSecondaryAction,
-    ListItemText,
-    Modal,
-    Radio
-} from "@material-ui/core";
+import Post from "../Post/Post";
+import {List, ListItem, ListItemSecondaryAction, Modal, Radio} from "@material-ui/core";
+import {PutWithAuth} from "../../services/api";
 
-const ProfileImage = () => {
+const ProfileImage = (props) => {
+
+    const {imageId} = props
     const [userPost, setUserPost] = useState([]);
     const classes = useStyles();
     const [control, setControl] = useState(false);
     const rootRef = React.useRef(null);
     const [open, setOpen] = useState(false);
-    const [selectedValue, setSelectedValue] = useState(1);
+    const [selectedValue, setSelectedValue] = useState(imageId);
+
+    const saveImage = () => {
+        PutWithAuth("/users/"+localStorage.getItem("currentUser"),{image:selectedValue})
+            .then(r => r.json()).catch((error) => {console.log(error)})
+    }
 
     const handleModal = (value) => {
         if(value==="open")
@@ -136,8 +135,6 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         minWidth: 300,
         transform: 'translateZ(0)',
-        // The position fixed scoping doesn't work in IE 11.
-        // Disable this demo to preserve the others.
         '@media all and (-ms-high-contrast: none)': {
             display: 'none',
         },
@@ -158,7 +155,7 @@ const useStyles = makeStyles((theme) => ({
     },
     root: {
         backgroundColor: "light",
-        maxWidth: 380,
+        maxWidth: 419,
         margin:30,
         padding:20
     },

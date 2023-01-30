@@ -36,7 +36,7 @@ const Post = (props) => {
         fetch("/posts", {
             method: "POST",
             headers: {"Content-Type": "application/json","Authorization":localStorage.getItem("tokenKey")},
-            body: JSON.stringify({title: title, userId: userId, text: text}),
+            body: JSON.stringify({title: title, userId: localStorage.getItem("currentUser"), text: text}),
         }).then(r => r.json()).catch((error) => {console.log(error)})
     }
     const handleSubmitClick = () => {

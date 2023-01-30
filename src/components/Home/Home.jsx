@@ -10,6 +10,7 @@ const Home = () => {
     const [postList,setPostList] = useState([]);
     const [isLoaded,setIsLoaded] = useState(false);
     const classes = useStyles();
+
     const fetchPosts = () => {
         fetch("/posts").then(response => response.json())
             .then((result)=> {
@@ -24,7 +25,7 @@ const Home = () => {
 
     useEffect(() => {
         fetchPosts()
-    },[postList])
+    },[])
 
     if(error){
         return <div>Error</div>

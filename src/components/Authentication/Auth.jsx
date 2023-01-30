@@ -3,6 +3,7 @@ import {Grid,Paper, TextField} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { useNavigate } from "react-router-dom";
+import {PostWithoutAuth} from "../../services/api";
 
 const Auth = () => {   //register ve login sayfalarında aynı formu kullanıcaz
 
@@ -28,11 +29,8 @@ const Auth = () => {   //register ve login sayfalarında aynı formu kullanıcaz
     }
 
     const sendAuthRequest = (path) => {
-        fetch("/auth/"+path,{
-            method: "POST",
-            headers: {"Content-Type":"application/json","Authorization":localStorage.getItem("tokenKey")},
-            body:JSON.stringify({username:username,password:password})
-        }).then((r)=>r.json())
+        PostWithoutAuth("/auth/"+path,{username:username,password:password})
+            .then((r)=>r.json())
             .then((result)=> {
                 localStorage.setItem("tokenKey", result.message)
                 localStorage.setItem("currentUser", result.userId)
