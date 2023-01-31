@@ -7,15 +7,16 @@ import Navbar from "./components/Navbar";
 import Auth from "./components/Authentication/Auth";
 
 function App() {
+
+
   return (
     <div className="App">
-
         <BrowserRouter>
             <Navbar></Navbar>
             <Routes>
                 <Route exact path={"/"} element={<Home></Home>}></Route>
                 <Route exact path={"/users/:userId"} element={<User></User>}></Route>
-                <Route path="/auth" element= {localStorage.getItem("currentUser") !=null ? <Navigate  to="/"/> :<Auth/> }></Route>
+                <Route path="/auth" element={<Auth/>}></Route>
             </Routes>
         </BrowserRouter>
     </div>

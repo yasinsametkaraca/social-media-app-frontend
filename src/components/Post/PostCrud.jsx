@@ -17,13 +17,12 @@ import MuiAlert from '@material-ui/lab/Alert';
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
-
-
 Alert.propTypes = {
     severity: PropTypes.string,
     onClose: PropTypes.any,
     children: PropTypes.node
 };
+
 const Post = (props) => {
 
     const {userId,username,fetchPosts} = props;

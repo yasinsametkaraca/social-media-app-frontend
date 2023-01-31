@@ -1,28 +1,54 @@
 import React, {useState} from "react";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import { CardContent, InputAdornment, OutlinedInput, Avatar} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
+import {PostWithAuth, RefreshToken} from "../../services/api";
 
 
 const CommentCrud = (props) => {
-    const {userId, username,postId} = props;
+    const {userId, username,postId,setCommentRefresh} = props;
     const classes = useStyles();
     const [text, setText] = useState("");
 
-
     const saveComment = () => {
-        fetch("/comments", {
-            method: "POST",
-            headers: {"Content-Type": "application/json","Authorization":localStorage.getItem("tokenKey")},
-            body: JSON.stringify({userId: localStorage.getItem("currentUser"), text: text, postId:postId})
-        })
-            .then(r => r.json())
-            .catch((error) => {console.log(error)})
+        PostWithAuth("/comments",{postId: postId, userId : userId, text : text,})
+            .then((response) => {
+                if(!response.ok) {
+                    RefreshToken()  //amacımız eğer accessTokenin süresi dolmuşsa tokeni refreshToken ile refresh edip geçerliyse yeniden comment atabilmektir.
+                    .then((response) => { if(!response.ok) {
+                        logout();
+                    } else {
+                        return response.json()
+                    }}).then((result) => {
+                        console.log(result)
+                        if(result != undefined){
+                            localStorage.setItem("tokenKey",result.accessToken);
+                            saveComment();
+                            setCommentRefresh();
+                        }}).catch((err) => {
+                        console.log(err)
+                        })
+                } else
+                    response.json()
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+
+    const navigate = useNavigate();
+    const logout = () => {
+        localStorage.removeItem("tokenKey")
+        localStorage.removeItem("currentUser")
+        localStorage.removeItem("refreshKey")
+        localStorage.removeItem("username")
+        navigate("/auth")
     }
     const handleCommentClick = () => {
         saveComment();
         setText("");
+        setCommentRefresh();
     }
     const handleCommentChange = (event) => {
         setText(event);

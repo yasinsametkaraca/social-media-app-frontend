@@ -17,7 +17,7 @@ const Home = () => {
                     setIsLoaded(true)
                     setPostList(result)
                 },(error) => {
-                    setIsLoaded(true);
+                    setIsLoaded(false);
                     setError(error);
                 }
             )
@@ -25,7 +25,7 @@ const Home = () => {
 
     useEffect(() => {
         fetchPosts()
-    },[])
+    },[isLoaded])
 
     if(error){
         return <div>Error</div>

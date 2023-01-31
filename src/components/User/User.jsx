@@ -17,8 +17,7 @@ const User = () => {
             .then((result) => {
                 console.log(result);
                 setUser(result)
-            })
-            .catch((error) => {console.log(error)})
+            }).catch((error) => {console.log(error)})
     }
 
     useEffect(() => {
@@ -27,17 +26,19 @@ const User = () => {
 
     return (
         <div className={classes.root}>
-            {user ? <ProfileImage imageId={user.imageId} ></ProfileImage> : ""}
-            <UserActivity userId={userId} className={classes.activity}></UserActivity>
+            {user ? <ProfileImage username={user.username} userId={userId} imageId={user.imageId} ></ProfileImage> : ""}
+            {localStorage.getItem("currentUser") == userId && <UserActivity userId={userId} className={classes.activity}></UserActivity>}
         </div>
     );
 };
 const useStyles = makeStyles({
     root : {
         display:"flex",
+        justifyContent:"center",
+        flexWrap:"wrap"
     },
     activity: {
-        margin:50
+
     }
 })
 

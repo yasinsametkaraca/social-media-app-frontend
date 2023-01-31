@@ -13,7 +13,7 @@ import {PutWithAuth} from "../../services/api";
 
 const ProfileImage = (props) => {
 
-    const {imageId} = props
+    const {imageId,userId,username} = props
     const [userPost, setUserPost] = useState([]);
     const classes = useStyles();
     const [control, setControl] = useState(false);
@@ -21,10 +21,10 @@ const ProfileImage = (props) => {
     const [open, setOpen] = useState(false);
     const [selectedValue, setSelectedValue] = useState(imageId);
 
-    const saveImage = () => {
+    /*const saveImage = () => {
         PutWithAuth("/users/"+localStorage.getItem("currentUser"),{image:selectedValue})
             .then(r => r.json()).catch((error) => {console.log(error)})
-    }
+    }*/
 
     const handleModal = (value) => {
         if(value==="open")
@@ -72,7 +72,7 @@ const ProfileImage = (props) => {
                     />
                     <CardContent>
                         <Typography gutterBottom variant="h5" component="h2">
-                            Username
+                            {username}
                         </Typography>
                         <Typography variant="body2" color="textSecondary" component="p">
                             Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
@@ -81,9 +81,9 @@ const ProfileImage = (props) => {
                     </CardContent>
                 </CardActionArea>
                 <CardActions className={classes.btnCard}>
-                    <Button size="medium"  variant="contained" color="primary" onClick={() => handleModal("open")}>
+                    {localStorage.getItem("currentUser") == userId && <Button size="medium" variant="contained" color="primary" onClick={() => handleModal("open")}>
                         Change Image
-                    </Button>
+                    </Button>}
                 </CardActions>
             </Card>
             <Modal

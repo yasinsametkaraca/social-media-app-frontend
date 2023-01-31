@@ -31,6 +31,12 @@ const Post = (props) => {
     const [likeCount, setLikeCount] = useState(likes.length);
     const [isLiked, setIsLiked] = useState(false);
     const [likeId, setLikeId] = useState(null);
+    const [refresh, setRefresh] = useState(false);
+
+    const setCommentRefresh = () => {
+        setRefresh(true);
+    }
+
     const theme = useTheme();
 
     const handleExpandClick = () => {
@@ -60,6 +66,7 @@ const Post = (props) => {
                     setError(error);
                 }
             )
+        setRefresh(false)
     }
 
     const saveLike = () => {
@@ -83,7 +90,7 @@ const Post = (props) => {
             isInitialMount.current=false;
         else
             fetchComments()
-    },[])
+    },[refresh])
 
     useEffect(() => {
        checkLikes()
@@ -92,17 +99,17 @@ const Post = (props) => {
 
     return (
         <div className={classes.root}>
-            <Card className={classes.root}>
+            <Card className={classes.root}>{username}
                 <CardHeader className={classes.header}
                     avatar={
                         <Link className={classes.routerLink} to={"/users/"+userId}>
                             <Avatar aria-label="recipe" className={classes.avatar}>
-                                {}
+                                {username != null && username.charAt(0).toUpperCase()}
                             </Avatar>
                         </Link>
                     }
-                    title={title}
-                />
+                    title={title}>
+                </CardHeader>
                 <CardContent>
                     <Typography className={classes.text} variant="body2" color="textSecondary" component="p">
                         {text}
@@ -127,10 +134,10 @@ const Post = (props) => {
                         <Container fixed className={classes.container}>
                             {
                                 error ? "error": isLoaded ? commentList.map(comment => (
-                                    <Comment userId={1} username={"username"} text={comment.text}></Comment>
+                                    <Comment userId={comment.userId} username={comment.username} text={comment.text}></Comment>
                                 )) : "Loading"
                             }
-                            {localStorage.getItem("currentUser")!==null && <CommentCrud userId={1} username={"username"} postId={postId}></CommentCrud>}
+                            {localStorage.getItem("currentUser")!==null && <CommentCrud userId={localStorage.getItem("currentUser")} username={localStorage.getItem("username")} postId={postId} setCommentRefresh={setCommentRefresh}></CommentCrud>}
                         </Container>
                 </Collapse>
             </Card>

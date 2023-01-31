@@ -86,6 +86,7 @@ const UserActivity = (props) => {
             .then((result) => {
                 setIsLoaded(true)
                 setActivityList(result)
+                console.log(activityList)
             }).catch((error) => {
             console.log(error)
             setIsLoaded(false)
@@ -105,11 +106,11 @@ const UserActivity = (props) => {
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>
-                                User Activity
+                                {activityList.length !== 0 && "User Activity"}
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {activityList.map((row) => {
+                            {activityList.length !== 0 ? activityList.map((row) => {
                                 return (
                                     <Button onClick={() => handleNotification(row[1])}>
                                         <TableRow hover role="checkbox" tabIndex={-1} key={row.code} >
@@ -119,7 +120,7 @@ const UserActivity = (props) => {
                                         </TableRow>
                                     </Button>
                                 );
-                            })}
+                            }) : (<div>There is no activity.</div>)}
                         </TableBody>
                     </Table>
                 </TableContainer>
@@ -135,7 +136,7 @@ const useStyles = makeStyles({
         maxHeight: 440,
         minWidth: 100,
         maxWidth: 800,
-        marginTop: 50,
+        marginTop: 30,
     },
     appBar: {
         position: 'relative',

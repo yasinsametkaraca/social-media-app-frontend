@@ -18,6 +18,19 @@ export const PostWithoutAuth = (url, body) => {
     })
 }
 
+export const RefreshToken = () => {
+    return fetch("/auth/refresh", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            userId: localStorage.getItem("currentUser"),
+            refreshToken: localStorage.getItem("refreshKey"),
+        })
+    })
+}
+
 export const PutWithAuth = (url, body) => {
     return fetch(url,  {
         method: "PUT",
@@ -47,6 +60,4 @@ export const DeleteWithAuth = (url) => {
             "Authorization" : localStorage.getItem("tokenKey"),
         },
     })
-
 }
-
