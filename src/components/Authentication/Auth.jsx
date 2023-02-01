@@ -13,6 +13,7 @@ const Auth = () => {   //register ve login sayfalarında aynı formu kullanıcaz
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError, ] = useState(null);
+
     const handleUsernameChange = (value) => {
         setUsername(value)
     }
@@ -21,21 +22,20 @@ const Auth = () => {   //register ve login sayfalarında aynı formu kullanıcaz
     }
 
     const handleButtonClick = (path) => {
-        localStorage.setItem("auth", "")
+        localStorage.setItem("auth", "");
         sendAuthRequest(path);
         setUsername("");
         setPassword("");
-        console.log(localStorage)
         navigate("/");
     }
 
-    const sendAuthRequest =  (path) => {
+    const sendAuthRequest = (path) => {
         PostWithoutAuth("/auth/"+path,{username:username,password:password})
             .then((result)=>result.json())
             .then((result)=> {
+                localStorage.setItem("currentUser", result.userId);
                 localStorage.setItem("tokenKey", result.accessToken);
                 localStorage.setItem("refreshKey", result.refreshToken);
-                localStorage.setItem("currentUser", result.userId);
                 localStorage.setItem("username", username);
             })
             .catch((error)=>setError(error))
